@@ -7,8 +7,7 @@ Add this to your shard.yml file:
 ```
 dependencies:
   uname:
-    github: djberg96/sys-uname
-    branch: crystal
+    github: djberg96/crystal-uname
 ```
 ## Synopsis
 ```
