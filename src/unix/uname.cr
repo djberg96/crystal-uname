@@ -1,5 +1,8 @@
 module System
   lib LibC
+    CTL_HW = 6
+    HW_MODEL = 2
+
     struct Uname
       sysname : ::LibC::Char[256]
       nodename : ::LibC::Char[256]
@@ -8,7 +11,10 @@ module System
       machine : ::LibC::Char[256]
     end
 
+    # The core language has a c/sysctl lib, but not for Macs yet.
+
     fun uname(value : Uname*) : Int32
+    fun sysctl(name : Int32*, namelen : UInt32, oldp : Void*, oldlenp : ::LibC::SizeT*, newp : Void*, newlen : ::LibC::SizeT) : Int32
   end
 
   struct Uname
@@ -75,5 +81,17 @@ module System
   #
   def self.machine : String
     uname.machine
+  end
+
+  def self.model
+    mib = Int32[LibC::CTL_HW, LibC::HW_MODEL]
+    buf = GC.malloc_atomic(256).as(UInt8*)
+    size = ::LibC::SizeT.new(256)
+
+    if LibC.sysctl(mib, 2, buf, pointerof(size), nil, 0) < 0
+      raise "sysctl function failed"
+    end
+
+    String.new(buf, size - 1)
   end
 end
