@@ -14,7 +14,10 @@ module System
     # The core language has a c/sysctl lib, but not for Macs yet.
 
     fun uname(value : Uname*) : Int32
-    fun sysctl(name : Int32*, namelen : UInt32, oldp : Void*, oldlenp : ::LibC::SizeT*, newp : Void*, newlen : ::LibC::SizeT) : Int32
+
+    {% unless flag?(:linux) %}
+      fun sysctl(name : Int32*, namelen : UInt32, oldp : Void*, oldlenp : ::LibC::SizeT*, newp : Void*, newlen : ::LibC::SizeT) : Int32
+    {% end %}
   end
 
   struct Uname
