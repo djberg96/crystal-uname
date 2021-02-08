@@ -86,14 +86,18 @@ module System
   # Returns the hardware model name.
   #
   def self.model : String
-    mib = Int32[LibC::CTL_HW, LibC::HW_MODEL]
-    buf = Bytes.new(256)
-    size = ::LibC::SizeT.new(256)
+    {% if flag?(:darwin) %}
+      mib = Int32[LibC::CTL_HW, LibC::HW_MODEL]
+      buf = Bytes.new(256)
+      size = ::LibC::SizeT.new(256)
 
-    if LibC.sysctl(mib, 2, buf, pointerof(size), nil, 0) < 0
-      raise "sysctl function failed"
-    end
+      LibC.sysctl(mib, 2, buf, pointerof(size), nil, 0) < 0
+        raise RuntimeError.from_errno("sysctl")
+      end
 
-    String.new(buf)[0, size - 1]
+      String.new(buf)[0, size - 1]
+    {% else %}
+      raise "the model method is unsupported on this platform"
+    {% end %}
   end
 end
