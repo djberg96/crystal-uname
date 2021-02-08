@@ -46,7 +46,7 @@ module System
     uname_struct = LibC::Uname.new
 
     if LibC.uname(pointerof(uname_struct)) < 0
-      raise "uname function call failed"
+      raise RuntimeError.from_errno("uname")
     else
       Uname.new(uname_struct)
     end
