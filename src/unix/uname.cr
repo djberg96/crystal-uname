@@ -85,7 +85,7 @@ module System
 
   # Returns the hardware model name.
   #
-  def self.model #: String
+  def self.model : String
     mib = Int32[LibC::CTL_HW, LibC::HW_MODEL]
     buf = Bytes.new(256)
     size = ::LibC::SizeT.new(256)
