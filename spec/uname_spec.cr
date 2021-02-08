@@ -31,7 +31,7 @@ describe System do
       expected = `sysctl hw.model`.split(":").last.strip
       System.model.should eq(expected)
     {% else %}
-      expect_raises(RuntimeError, "the model method is unsupported on this platform"){}
+      expect_raises(Exception, "the model method is unsupported on this platform"){ System.model }
     {% end %}
   end
 
