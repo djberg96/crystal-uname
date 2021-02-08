@@ -3,13 +3,27 @@ module System
     CTL_HW = 6
     HW_MODEL = 2
 
-    struct Uname
-      sysname : ::LibC::Char[256]
-      nodename : ::LibC::Char[256]
-      release : ::LibC::Char[256]
-      version : ::LibC::Char[256]
-      machine : ::LibC::Char[256]
-    end
+    {% if flag?(:linux) %}
+      BUF_SIZE = 65
+      struct Uname
+        sysname : ::LibC::Char[BUF_SIZE]
+        nodename : ::LibC::Char[BUF_SIZE]
+        release : ::LibC::Char[BUF_SIZE]
+        version : ::LibC::Char[BUF_SIZE]
+        machine : ::LibC::Char[BUF_SIZE]
+        domainname : ::LibC::Char[BUF_SIZE]
+      end
+    {% else %}
+      BUF_SIZE = 256
+      struct Uname
+        sysname : ::LibC::Char[BUF_SIZE]
+        nodename : ::LibC::Char[BUF_SIZE]
+        release : ::LibC::Char[BUF_SIZE]
+        version : ::LibC::Char[BUF_SIZE]
+        machine : ::LibC::Char[BUF_SIZE]
+      end
+    {% end %}
+
 
     # The core language has a c/sysctl lib, but not for Macs yet.
 
