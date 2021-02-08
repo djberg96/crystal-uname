@@ -88,7 +88,7 @@ module System
   def self.model : String
     {% if flag?(:darwin) %}
       mib = Int32[LibC::CTL_HW, LibC::HW_MODEL]
-      buf = Bytes.new(256)
+      buf = Bytes.new(64)
       size = ::LibC::SizeT.new(buf.size)
 
       if LibC.sysctl(mib, 2, buf, pointerof(size), nil, 0) < 0
