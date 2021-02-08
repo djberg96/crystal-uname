@@ -26,6 +26,15 @@ describe System do
     System.version.should eq(expected)
   end
 
+  it "correctly reports the model on Darwin or raises an error if not supported" do
+    {% if flag?(:darwin) %}
+      expected = `sysctl hw.model`.split(":").last.strip
+      System.model.should eq(expected)
+    {% else %}
+      expect_raises(Exception, "the model method is unsupported on this platform"){ System.model }
+    {% end %}
+  end
+
   it "returns a struct if the uname method is used" do
     System.uname.should be_a(System::Uname)
   end

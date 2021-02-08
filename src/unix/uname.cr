@@ -1,14 +1,37 @@
 module System
   lib LibC
-    struct Uname
-      sysname : ::LibC::Char[256]
-      nodename : ::LibC::Char[256]
-      release : ::LibC::Char[256]
-      version : ::LibC::Char[256]
-      machine : ::LibC::Char[256]
-    end
+    CTL_HW = 6
+    HW_MODEL = 2
+
+    {% if flag?(:linux) %}
+      BUF_SIZE = 65
+      struct Uname
+        sysname : ::LibC::Char[BUF_SIZE]
+        nodename : ::LibC::Char[BUF_SIZE]
+        release : ::LibC::Char[BUF_SIZE]
+        version : ::LibC::Char[BUF_SIZE]
+        machine : ::LibC::Char[BUF_SIZE]
+        domainname : ::LibC::Char[BUF_SIZE]
+      end
+    {% else %}
+      BUF_SIZE = 256
+      struct Uname
+        sysname : ::LibC::Char[BUF_SIZE]
+        nodename : ::LibC::Char[BUF_SIZE]
+        release : ::LibC::Char[BUF_SIZE]
+        version : ::LibC::Char[BUF_SIZE]
+        machine : ::LibC::Char[BUF_SIZE]
+      end
+    {% end %}
+
+
+    # The core language has a c/sysctl lib, but not for Macs yet.
 
     fun uname(value : Uname*) : Int32
+
+    {% unless flag?(:linux) %}
+      fun sysctl(name : Int32*, namelen : UInt32, oldp : Void*, oldlenp : ::LibC::SizeT*, newp : Void*, newlen : ::LibC::SizeT) : Int32
+    {% end %}
   end
 
   struct Uname
@@ -40,7 +63,7 @@ module System
     uname_struct = LibC::Uname.new
 
     if LibC.uname(pointerof(uname_struct)) < 0
-      raise "uname function call failed"
+      raise RuntimeError.from_errno("uname")
     else
       Uname.new(uname_struct)
     end
@@ -75,5 +98,23 @@ module System
   #
   def self.machine : String
     uname.machine
+  end
+
+  # Returns the hardware model name.
+  #
+  def self.model : String
+    {% if flag?(:darwin) %}
+      mib = Int32[LibC::CTL_HW, LibC::HW_MODEL]
+      buf = Bytes.new(64)
+      size = ::LibC::SizeT.new(buf.size)
+
+      if LibC.sysctl(mib, 2, buf, pointerof(size), nil, 0) < 0
+        raise RuntimeError.from_errno("sysctl")
+      end
+
+      String.new(buf)[0, size - 1]
+    {% else %}
+      raise "the model method is unsupported on this platform"
+    {% end %}
   end
 end
