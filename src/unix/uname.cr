@@ -83,7 +83,9 @@ module System
     uname.machine
   end
 
-  def self.model
+  # Returns the hardware model name.
+  #
+  def self.model : String
     mib = Int32[LibC::CTL_HW, LibC::HW_MODEL]
     buf = GC.malloc_atomic(256).as(UInt8*)
     size = ::LibC::SizeT.new(256)
