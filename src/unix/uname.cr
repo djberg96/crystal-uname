@@ -91,7 +91,7 @@ module System
       buf = Bytes.new(256)
       size = ::LibC::SizeT.new(256)
 
-      LibC.sysctl(mib, 2, buf, pointerof(size), nil, 0) < 0
+      if LibC.sysctl(mib, 2, buf, pointerof(size), nil, 0) < 0
         raise RuntimeError.from_errno("sysctl")
       end
 
