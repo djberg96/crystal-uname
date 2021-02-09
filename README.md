@@ -22,7 +22,14 @@ p System.nodename
 p System.release
 p System.version
 p System.machine
+
+p System.model      # Darwin only
+p System.domainname # Linux only
 ```
+
+## Supported Platforms
+* Linux
+* Darwin
 
 ## Future Plans
 Add MS Windows support
