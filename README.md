@@ -10,7 +10,7 @@ dependencies:
     github: djberg96/crystal-uname
 ```
 ## Synopsis
-```
+```crystal
 require "uname"
 
 # Get full information about your system.
