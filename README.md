@@ -35,7 +35,7 @@ p System.domainname # Linux only
 Add MS Windows support
 
 ## Copyright
-(C) 2021, Daniel J. Berger
+(C) 2021-2025, Daniel J. Berger
 All Rights Reserved
 
 ## Author
