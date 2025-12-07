@@ -1,9 +1,12 @@
 name: uname
-version: 0.2.0
+version: 0.2.1
+description: An interface for getting OS information
 
 authors:
   - Daniel Berger <djberg96@gmail.com>
 
-crystal: 0.36.0
+repository: https://github.com:djberg96/crystal-uname
+
+crystal: ">= 0.36.0"
 
 license: MIT
