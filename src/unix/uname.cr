@@ -43,12 +43,27 @@ module System
     macro get(*props)
       {% for prop in props %}
         def {{prop}}
-          String.new(cstruct.{{prop}}.to_unsafe)
+          str = String.new(cstruct.{{prop}}.to_unsafe)
+          str.split('\0').first
         end
       {% end %}
     end
 
     get sysname, nodename, release, version, machine
+
+    def to_s(io : IO) : Nil
+      io << "System::Uname("
+      io << "sysname=" << sysname.inspect << ", "
+      io << "nodename=" << nodename.inspect << ", "
+      io << "release=" << release.inspect << ", "
+      io << "version=" << version.inspect << ", "
+      io << "machine=" << machine.inspect
+      io << ")"
+    end
+
+    def inspect(io : IO) : Nil
+      to_s(io)
+    end
   end
 
   # Returns a `System::Uname` struct that has the following members:
